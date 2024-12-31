@@ -3,12 +3,13 @@ const LoginPage = require('../WebComponent/LoginPage');
 const DashboardPage = require('../WebComponent/Dashboard');
 const assert = require('assert');
 const fs = require('fs');
+const { SeleniumServer } = require('selenium-webdriver/remote');
 require('dotenv').config();
 
 
 const browser = process.env.BROWSER;
 const baseUrl = process.env.BASE_URL;
-const username =process.env.USER_NAME;
+const username = process.env.USER_NAME;
 const password = process.env.PASSWORD;
 
 const screenshotDir = './screenshots/';
@@ -16,12 +17,11 @@ if(!fs.existsSync(screenshotDir)){
     fs.mkdirSync(screenshotDir, {recursive: true});
 }
 
-describe('TestCase 1 [login] #Regression #Smoke', function () {
+describe('TestCase 1 [login] #Regression', function () {
     this.timeout(40000);
     let driver;
 
-
-    switch(browser.toLowerCase()){   
+    switch(browser.toLowerCase()) {   
         case 'firefox':
             const firefox = require('selenium-webdriver/firefox');
             options = new firefox.Options();
@@ -43,7 +43,7 @@ describe('TestCase 1 [login] #Regression #Smoke', function () {
 
     //Run setiap mulai test, satu kali saja paling awal
     before(async function (){
-        driver = await new Builder().forBrowser(browser).setFirefoxOptions(options).build(); //browser panggil dari .env
+        driver = await new Builder().forBrowser(browser).setChromeOptions(options).build(); //browser panggil dari .env
     });
 
     //Test Suite dimulai dengan apa, setiap melakukan tes

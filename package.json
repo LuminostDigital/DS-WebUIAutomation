@@ -6,6 +6,7 @@
   "scripts": {
     "test": "mocha 'test/**/*.js'",
     "test-regression": "mocha --grep  '#Regression'",
+    "test-smoke": "mocha --grep  '#Smoke'",
     "test-login": "mocha --grep '[login]'"
   }
 }

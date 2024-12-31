@@ -4,13 +4,9 @@ class CartPage {
     constructor(driver) {
         this.driver = driver;
         this.cartBadge = By.css('.shopping_cart_badge');
-        this.addToCartButton = By.id('add-to-cart-sauce-labs-backpack');
-        this.cartItem = By.xpath("//div[contains(@class, 'cart_item')]");
-
-    }
-
-    async addItemToCart() {
-        await this.driver.findElement(this.addToCartButton).click();
+        this.cartIcon = By.css('.shopping_cart_link');
+        this.itemInCartLocator = By.css(".inventory_item_name");
+        this.checkoutButton = By.id('checkout');
     }
 
     async getCartBadgeText() {
@@ -18,24 +14,27 @@ class CartPage {
             const badge = await this.driver.findElement(this.cartBadge);
             return await badge.getText();
         } catch (err) {
-            return null; // Jika badge tidak ada
+            console.warn("Cart badge not found. Assuming cart is empty.", err);
+            return "0";
         }
     }
 
     async isItemInCart() {
         try {
-            // Klik ikon keranjang untuk membuka halaman keranjang
-            const cartIcon = await this.driver.findElement(By.className('shopping_cart_link'));
-            await cartIcon.click();
-    
-            // Tunggu hingga elemen cart_item muncul menggunakan XPath
-            await this.driver.wait(until.elementLocated(this.cartItem), 10000);
-            const items = await this.driver.findElements(this.cartItem);
-            return items.length > 0;
+            await this.driver.findElement(this.cartIcon).click();
+            await this.driver.wait(until.elementLocated(this.itemInCartLocator), 10000);
+            return true;
         } catch (err) {
-            console.error("Error menemukan item di keranjang:", err);
+            console.error("Error finding item in cart:", err);
             return false;
         }
+    }
+
+    async proceedToCheckout() {
+        const checkoutButtonElement = await this.driver.findElement(this.checkoutButton);
+        await this.driver.wait(until.elementIsVisible(checkoutButtonElement), 10000);
+        await this.driver.wait(until.elementIsEnabled(checkoutButtonElement), 10000);
+        await checkoutButtonElement.click();
     }
 }
 
